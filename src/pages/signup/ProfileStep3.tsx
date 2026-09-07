@@ -5,12 +5,12 @@ import { TextField } from '../../components/ui/TextField'
 import { Button } from '../../components/ui/Button'
 import { useSignup } from '../../lib/SignupContext'
 import { useToast } from '../../lib/ToastContext'
-import { validateBio, validateCollege } from '../../lib/validation'
+import { validateBio, validateCity, validateCollege, validateState } from '../../lib/validation'
 import { submitProfile } from '../../lib/mockApi'
 
 export function ProfileStep3() {
   const navigate = useNavigate()
-  const { data, updateData, emailVerified } = useSignup()
+  const { data, updateData, emailVerified, setCompleted } = useSignup()
   const { showToast } = useToast()
 
   const [college, setCollege] = useState(data.college)
@@ -22,7 +22,7 @@ export function ProfileStep3() {
   if (!emailVerified) {
     return <Navigate to="/signup/email" replace />
   }
-  if (!data.state || !data.city) {
+  if (validateState(data.state) || validateCity(data.city)) {
     return <Navigate to="/signup/profile-2" replace />
   }
 
@@ -41,6 +41,7 @@ export function ProfileStep3() {
       const finalData = { ...data, college: college.trim(), bio: bio.trim() }
       await submitProfile(finalData)
       updateData({ college: finalData.college, bio: finalData.bio })
+      setCompleted(true)
       navigate('/signup/success')
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
@@ -68,6 +69,7 @@ export function ProfileStep3() {
           value={college}
           onChange={(event) => {
             setCollege(event.target.value)
+            updateData({ college: event.target.value })
             if (touched.college) setErrors((prev) => ({ ...prev, college: validateCollege(event.target.value) }))
           }}
           onBlur={() => {
@@ -85,6 +87,7 @@ export function ProfileStep3() {
           value={bio}
           onChange={(event) => {
             setBio(event.target.value)
+            updateData({ bio: event.target.value })
             if (touched.bio) setErrors((prev) => ({ ...prev, bio: validateBio(event.target.value) }))
           }}
           onBlur={() => {

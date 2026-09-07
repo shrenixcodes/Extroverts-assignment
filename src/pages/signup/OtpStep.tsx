@@ -5,7 +5,7 @@ import { OtpInput } from '../../components/ui/OtpInput'
 import { Button } from '../../components/ui/Button'
 import { useSignup } from '../../lib/SignupContext'
 import { useToast } from '../../lib/ToastContext'
-import { validateOtp } from '../../lib/validation'
+import { validateEmail, validateOtp } from '../../lib/validation'
 import { OTP_LENGTH, RESEND_COOLDOWN_SECONDS, resendVerificationCode, verifyCode } from '../../lib/mockApi'
 
 export function OtpStep() {
@@ -25,7 +25,7 @@ export function OtpStep() {
     return () => window.clearInterval(timer)
   }, [cooldown])
 
-  if (!data.email) {
+  if (validateEmail(data.email)) {
     return <Navigate to="/signup/email" replace />
   }
 

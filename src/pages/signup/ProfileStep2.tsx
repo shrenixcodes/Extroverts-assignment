@@ -6,7 +6,7 @@ import { PillGroup } from '../../components/ui/PillGroup'
 import { Button } from '../../components/ui/Button'
 import { useSignup } from '../../lib/SignupContext'
 import { getCitiesForState, PRONOUN_OPTIONS, STATES } from '../../lib/locations'
-import { validateCity, validatePronouns, validateState } from '../../lib/validation'
+import { validateCity, validateDob, validateFullName, validatePronouns, validateState } from '../../lib/validation'
 
 export function ProfileStep2() {
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ export function ProfileStep2() {
   if (!emailVerified) {
     return <Navigate to="/signup/email" replace />
   }
-  if (!data.fullName || !data.dob) {
+  if (validateFullName(data.fullName) || validateDob(data.dob)) {
     return <Navigate to="/signup/profile-1" replace />
   }
 
@@ -32,14 +32,18 @@ export function ProfileStep2() {
     if (touched.state) setErrors((prev) => ({ ...prev, state: validateState(nextState) }))
 
     const availableCities = getCitiesForState(nextState)
-    if (!availableCities.includes(city)) {
+    const cityStillValid = availableCities.includes(city)
+    const nextCity = cityStillValid ? city : ''
+    if (!cityStillValid) {
       setCity('')
       if (touched.city) setErrors((prev) => ({ ...prev, city: validateCity('') }))
     }
+    updateData({ state: nextState, city: nextCity })
   }
 
   function handleCityChange(nextCity: string) {
     setCity(nextCity)
+    updateData({ city: nextCity })
     if (touched.city) setErrors((prev) => ({ ...prev, city: validateCity(nextCity) }))
   }
 
@@ -74,6 +78,7 @@ export function ProfileStep2() {
           value={pronouns}
           onChange={(next) => {
             setPronouns(next)
+            updateData({ pronouns: next })
             setTouched((prev) => ({ ...prev, pronouns: true }))
             setErrors((prev) => ({ ...prev, pronouns: validatePronouns(next) }))
           }}

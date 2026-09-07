@@ -63,6 +63,7 @@ export function ProfileStep1() {
           value={fullName}
           onChange={(event) => {
             setFullName(event.target.value)
+            updateData({ fullName: event.target.value })
             if (touched.fullName) validateField('fullName', event.target.value)
           }}
           onBlur={() => handleBlur('fullName')}
@@ -77,6 +78,7 @@ export function ProfileStep1() {
           value={dob}
           onChange={(event) => {
             setDob(event.target.value)
+            updateData({ dob: event.target.value })
             if (touched.dob) validateField('dob', event.target.value)
           }}
           onBlur={() => handleBlur('dob')}

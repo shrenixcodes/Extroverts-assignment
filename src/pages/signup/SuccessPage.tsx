@@ -5,9 +5,9 @@ import { useSignup } from '../../lib/SignupContext'
 
 export function SuccessPage() {
   const navigate = useNavigate()
-  const { data, emailVerified, resetSignup } = useSignup()
+  const { data, emailVerified, completed, resetSignup } = useSignup()
 
-  if (!emailVerified || !data.college) {
+  if (!emailVerified || !completed) {
     return <Navigate to="/signup/email" replace />
   }
 

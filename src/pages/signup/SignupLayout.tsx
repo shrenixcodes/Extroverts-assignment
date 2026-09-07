@@ -17,19 +17,21 @@ export function SignupLayout({ step, onBack, children }: SignupLayoutProps) {
 
   return (
     <div className="flex min-h-dvh flex-col bg-black px-6 pt-[calc(env(safe-area-inset-top)+20px)] pb-[calc(env(safe-area-inset-bottom)+24px)] sm:px-10">
-      <header className="flex items-center justify-between">
-        <BackButton onClick={onBack ?? (() => navigate(-1))} />
-        <Logo size="sm" />
-        <div className="w-10" aria-hidden="true" />
-      </header>
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
+        <header className="flex items-center justify-between">
+          <BackButton onClick={onBack ?? (() => navigate(-1))} />
+          <Logo size="sm" />
+          <div className="w-10" aria-hidden="true" />
+        </header>
 
-      <div className="mt-6">
-        <ProgressIndicator steps={STEP_LABELS} currentStep={step} />
+        <div className="mt-6">
+          <ProgressIndicator steps={STEP_LABELS} currentStep={step} />
+        </div>
+
+        <main key={step} className="animate-slide-up flex w-full flex-1 flex-col justify-center gap-8 py-8">
+          {children}
+        </main>
       </div>
-
-      <main key={step} className="animate-slide-up mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-8 py-8">
-        {children}
-      </main>
     </div>
   )
 }

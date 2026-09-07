@@ -26,6 +26,7 @@ export function EmailStep() {
 
   function handleChange(value: string) {
     setEmail(value)
+    updateData({ email: value })
     if (touched) runValidation(value)
   }
 
