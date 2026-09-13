@@ -81,7 +81,7 @@ deterministically so they can be verified during review:
 | Scenario | How to trigger |
 | --- | --- |
 | OTP verification | Enter `123456` to verify successfully. Any other 6-digit code shows the "incorrect code" error. |
-| Email send/resend failure | Enter `fail@nubpack.club` as the email address. |
+| Email send failure | Enter `fail@nubpack.club` as the email address on the Email step. |
 | Final profile submission failure | Enter `Fail Case` as the full name on the "About You" step. |
 | Age gate | Any date of birth resulting in an age under 18 is blocked with "You must be 18 or older to join." before the user can proceed. |
 
