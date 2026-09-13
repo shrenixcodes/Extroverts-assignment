@@ -30,10 +30,10 @@ export function PillGroup({ label, options, value, onChange, error, name }: Pill
               role="radio"
               aria-checked={selected}
               onClick={() => onChange(option)}
-              className={`rounded-full border px-4 py-2.5 text-sm font-medium transition-colors ${
+              className={`rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-150 active:scale-95 ${
                 selected
-                  ? 'border-white bg-white text-black'
-                  : 'border-white/15 bg-white/5 text-white/80 hover:border-white/30'
+                  ? 'animate-pop border-white bg-white text-black shadow-[0_0_0_4px_rgba(255,255,255,0.08)]'
+                  : 'border-white/15 bg-white/5 text-white/80 hover:border-white/30 hover:bg-white/[0.08]'
               }`}
             >
               {option}

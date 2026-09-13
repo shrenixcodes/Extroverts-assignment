@@ -7,10 +7,12 @@ import { Button } from '../../components/ui/Button'
 import { useSignup } from '../../lib/SignupContext'
 import { getCitiesForState, PRONOUN_OPTIONS, STATES } from '../../lib/locations'
 import { validateCity, validateDob, validateFullName, validatePronouns, validateState } from '../../lib/validation'
+import { useFocusHeading } from '../../lib/useFocusHeading'
 
 export function ProfileStep2() {
   const navigate = useNavigate()
   const { data, updateData, emailVerified } = useSignup()
+  const headingRef = useFocusHeading<HTMLHeadingElement>('profile-2')
 
   const [pronouns, setPronouns] = useState(data.pronouns)
   const [state, setState] = useState(data.state)
@@ -66,7 +68,9 @@ export function ProfileStep2() {
   return (
     <SignupLayout step={3} onBack={() => navigate('/signup/profile-1')}>
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Where do we find you?</h1>
+        <h1 ref={headingRef} className="text-2xl font-bold text-white outline-none sm:text-3xl">
+          Where do we find you?
+        </h1>
         <p className="text-sm text-white/50">Helps us match you with the right scene.</p>
       </div>
 

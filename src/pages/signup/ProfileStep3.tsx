@@ -7,10 +7,12 @@ import { useSignup } from '../../lib/SignupContext'
 import { useToast } from '../../lib/ToastContext'
 import { validateBio, validateCity, validateCollege, validateState } from '../../lib/validation'
 import { submitProfile } from '../../lib/mockApi'
+import { useFocusHeading } from '../../lib/useFocusHeading'
 
 export function ProfileStep3() {
   const navigate = useNavigate()
   const { data, updateData, emailVerified, setCompleted } = useSignup()
+  const headingRef = useFocusHeading<HTMLHeadingElement>('profile-3')
   const { showToast } = useToast()
 
   const [college, setCollege] = useState(data.college)
@@ -55,7 +57,9 @@ export function ProfileStep3() {
   return (
     <SignupLayout step={4} onBack={() => navigate('/signup/profile-2')}>
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Almost there</h1>
+        <h1 ref={headingRef} className="text-2xl font-bold text-white outline-none sm:text-3xl">
+          Almost there
+        </h1>
         <p className="text-sm text-white/50">A little more about you.</p>
       </div>
 
@@ -77,6 +81,7 @@ export function ProfileStep3() {
             setErrors((prev) => ({ ...prev, college: validateCollege(college) }))
           }}
           error={touched.college ? errors.college : null}
+          hint={`${college.trim().length}/80`}
         />
 
         <TextField

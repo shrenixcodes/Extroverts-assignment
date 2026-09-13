@@ -13,6 +13,14 @@ export function OtpInput({ length, value, onChange, error, disabled }: OtpInputP
   const digits = Array.from({ length }, (_, index) => value[index] ?? '')
   const errorId = 'otp-error'
 
+  function playPop(index: number) {
+    const el = inputRefs.current[index]
+    if (!el) return
+    el.classList.remove('animate-otp-pop')
+    void el.offsetWidth
+    el.classList.add('animate-otp-pop')
+  }
+
   function setDigit(index: number, digit: string) {
     const nextDigits = [...digits]
     nextDigits[index] = digit
@@ -22,8 +30,11 @@ export function OtpInput({ length, value, onChange, error, disabled }: OtpInputP
   function handleChange(index: number, rawInput: string) {
     const digit = rawInput.replace(/\D/g, '').slice(-1)
     setDigit(index, digit)
-    if (digit && index < length - 1) {
-      inputRefs.current[index + 1]?.focus()
+    if (digit) {
+      playPop(index)
+      if (index < length - 1) {
+        inputRefs.current[index + 1]?.focus()
+      }
     }
   }
 
@@ -48,6 +59,7 @@ export function OtpInput({ length, value, onChange, error, disabled }: OtpInputP
     if (!pasted) return
     event.preventDefault()
     onChange(pasted)
+    pasted.split('').forEach((_, index) => playPop(index))
     const nextIndex = Math.min(pasted.length, length - 1)
     inputRefs.current[nextIndex]?.focus()
   }
@@ -75,7 +87,7 @@ export function OtpInput({ length, value, onChange, error, disabled }: OtpInputP
             onPaste={handlePaste}
             onFocus={(event) => event.target.select()}
             className={`h-14 w-12 flex-1 rounded-2xl border bg-white/5 text-center text-xl font-semibold text-white outline-none transition-colors focus:bg-white/[0.08] sm:w-14 ${
-              error ? 'border-rose-500/60' : 'border-white/15 focus:border-white/50'
+              error ? 'border-rose-500/60 animate-shake' : 'border-white/15 focus:border-white/50'
             } disabled:opacity-50`}
           />
         ))}

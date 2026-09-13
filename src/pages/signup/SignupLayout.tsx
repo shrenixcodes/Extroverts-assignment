@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Logo } from '../../components/ui/Logo'
 import { BackButton } from '../../components/ui/BackButton'
 import { ProgressIndicator } from '../../components/ui/ProgressIndicator'
+import { AmbientGlow } from '../../components/ui/AmbientGlow'
 
 const STEP_LABELS = ['Account', 'About You', 'Location', 'Finish Up']
 
@@ -16,8 +17,10 @@ export function SignupLayout({ step, onBack, children }: SignupLayoutProps) {
   const navigate = useNavigate()
 
   return (
-    <div className="flex min-h-dvh flex-col bg-black px-6 pt-[calc(env(safe-area-inset-top)+20px)] pb-[calc(env(safe-area-inset-bottom)+24px)] sm:px-10">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
+    <div className="relative flex min-h-dvh flex-col bg-black px-6 pt-[calc(env(safe-area-inset-top)+20px)] pb-[calc(env(safe-area-inset-bottom)+24px)] sm:px-10">
+      <AmbientGlow />
+
+      <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col">
         <header className="flex items-center justify-between">
           <BackButton onClick={onBack ?? (() => navigate(-1))} />
           <Logo size="sm" />

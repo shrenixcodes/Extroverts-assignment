@@ -5,13 +5,22 @@ import { OtpInput } from '../../components/ui/OtpInput'
 import { Button } from '../../components/ui/Button'
 import { useSignup } from '../../lib/SignupContext'
 import { useToast } from '../../lib/ToastContext'
+import { useFocusHeading } from '../../lib/useFocusHeading'
 import { validateEmail, validateOtp } from '../../lib/validation'
 import { OTP_LENGTH, RESEND_COOLDOWN_SECONDS, resendVerificationCode, verifyCode } from '../../lib/mockApi'
+
+function maskEmail(email: string): string {
+  const [local, domain] = email.split('@')
+  if (!domain || local.length === 0) return email
+  if (local.length <= 2) return `${local[0]}${'*'.repeat(local.length)}@${domain}`
+  return `${local[0]}${'*'.repeat(local.length - 2)}${local[local.length - 1]}@${domain}`
+}
 
 export function OtpStep() {
   const navigate = useNavigate()
   const { data, setEmailVerified } = useSignup()
   const { showToast } = useToast()
+  const headingRef = useFocusHeading<HTMLHeadingElement>('otp')
 
   const [otp, setOtp] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -25,20 +34,11 @@ export function OtpStep() {
     return () => window.clearInterval(timer)
   }, [cooldown])
 
-  if (validateEmail(data.email)) {
-    return <Navigate to="/signup/email" replace />
-  }
+  const emailValid = !validateEmail(data.email)
 
-  function handleOtpChange(value: string) {
-    setOtp(value)
-    if (error) setError(null)
-  }
-
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault()
+  async function runVerification(code: string) {
     if (verifying) return
-
-    const message = validateOtp(otp, OTP_LENGTH)
+    const message = validateOtp(code, OTP_LENGTH)
     if (message) {
       setError(message)
       return
@@ -46,7 +46,7 @@ export function OtpStep() {
 
     setVerifying(true)
     try {
-      await verifyCode(otp)
+      await verifyCode(code)
       setEmailVerified(true)
       navigate('/signup/profile-1')
     } catch (err) {
@@ -55,6 +55,23 @@ export function OtpStep() {
     } finally {
       setVerifying(false)
     }
+  }
+
+  if (!emailValid) {
+    return <Navigate to="/signup/email" replace />
+  }
+
+  function handleOtpChange(value: string) {
+    setOtp(value)
+    if (error) setError(null)
+    if (value.length === OTP_LENGTH) {
+      runVerification(value)
+    }
+  }
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault()
+    runVerification(otp)
   }
 
   async function handleResend() {
@@ -76,9 +93,11 @@ export function OtpStep() {
   return (
     <SignupLayout step={1} onBack={() => navigate('/signup/email')}>
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Enter your code</h1>
+        <h1 ref={headingRef} className="text-2xl font-bold text-white outline-none sm:text-3xl">
+          Enter your code
+        </h1>
         <p className="text-sm text-white/50">
-          We sent a {OTP_LENGTH}-digit code to <span className="text-white/80">{data.email}</span>
+          We sent a {OTP_LENGTH}-digit code to <span className="text-white/80">{maskEmail(data.email)}</span>
         </p>
       </div>
 
@@ -89,9 +108,17 @@ export function OtpStep() {
           Verify
         </Button>
 
-        <div className="text-center text-sm text-white/50">
+        <div className="flex flex-col items-center gap-2 text-sm text-white/50">
           {cooldown > 0 ? (
-            <span>Resend code in {cooldown}s</span>
+            <>
+              <span>Resend code in {cooldown}s</span>
+              <div className="h-1 w-24 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-white/40 transition-all duration-1000 ease-linear"
+                  style={{ width: `${(cooldown / RESEND_COOLDOWN_SECONDS) * 100}%` }}
+                />
+              </div>
+            </>
           ) : (
             <button
               type="button"

@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { SignupProvider } from './lib/SignupContext'
 import { ToastProvider } from './lib/ToastContext'
+import { CursorSpotlight } from './components/ui/CursorSpotlight'
 import { LandingPage } from './pages/LandingPage'
 import { TermsPage } from './pages/TermsPage'
 import { EmailStep } from './pages/signup/EmailStep'
@@ -15,6 +16,7 @@ export default function App() {
     <BrowserRouter>
       <ToastProvider>
         <SignupProvider>
+          <CursorSpotlight />
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/terms" element={<TermsPage />} />

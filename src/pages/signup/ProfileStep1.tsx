@@ -5,12 +5,14 @@ import { TextField } from '../../components/ui/TextField'
 import { Button } from '../../components/ui/Button'
 import { useSignup } from '../../lib/SignupContext'
 import { validateDob, validateFullName } from '../../lib/validation'
+import { useFocusHeading } from '../../lib/useFocusHeading'
 
 const TODAY = new Date().toISOString().split('T')[0]
 
 export function ProfileStep1() {
   const navigate = useNavigate()
   const { data, updateData, emailVerified } = useSignup()
+  const headingRef = useFocusHeading<HTMLHeadingElement>('profile-1')
 
   const [fullName, setFullName] = useState(data.fullName)
   const [dob, setDob] = useState(data.dob)
@@ -49,7 +51,9 @@ export function ProfileStep1() {
   return (
     <SignupLayout step={2} onBack={() => navigate('/signup/otp')}>
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Let&rsquo;s make it official</h1>
+        <h1 ref={headingRef} className="text-2xl font-bold text-white outline-none sm:text-3xl">
+          Let&rsquo;s make it official
+        </h1>
         <p className="text-sm text-white/50">Tell us your name and birthday.</p>
       </div>
 

@@ -7,11 +7,13 @@ import { useSignup } from '../../lib/SignupContext'
 import { useToast } from '../../lib/ToastContext'
 import { validateEmail } from '../../lib/validation'
 import { sendVerificationCode } from '../../lib/mockApi'
+import { useFocusHeading } from '../../lib/useFocusHeading'
 
 export function EmailStep() {
   const navigate = useNavigate()
   const { data, updateData } = useSignup()
   const { showToast } = useToast()
+  const headingRef = useFocusHeading<HTMLHeadingElement>('email')
 
   const [email, setEmail] = useState(data.email)
   const [error, setError] = useState<string | null>(null)
@@ -61,7 +63,9 @@ export function EmailStep() {
   return (
     <SignupLayout step={1} onBack={() => navigate('/terms')}>
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">What&rsquo;s your email?</h1>
+        <h1 ref={headingRef} className="text-2xl font-bold text-white outline-none sm:text-3xl">
+          What&rsquo;s your email?
+        </h1>
         <p className="text-sm text-white/50">
           We&rsquo;ll send a code to keep your account secure.
         </p>

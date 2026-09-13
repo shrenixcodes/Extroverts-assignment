@@ -11,13 +11,15 @@ export function ProgressIndicator({ steps, currentStep }: ProgressIndicatorProps
           const stepNumber = index + 1
           const isComplete = stepNumber < currentStep
           const isCurrent = stepNumber === currentStep
+          const isFilled = isComplete || isCurrent
           return (
-            <div
-              key={step}
-              className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-                isComplete || isCurrent ? 'bg-white' : 'bg-white/15'
-              }`}
-            />
+            <div key={step} className="h-1 flex-1 overflow-hidden rounded-full bg-white/15">
+              <div
+                className={`h-full rounded-full bg-white transition-all ease-out ${
+                  isFilled ? 'w-full duration-500' : 'w-0 duration-300'
+                }`}
+              />
+            </div>
           )
         })}
       </div>
